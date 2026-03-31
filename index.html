@@ -219,7 +219,7 @@
         // ⚠️ هام جداً: ضع مفتاح API الخاص بك هنا لكي يعمل البوت عند رفعه لموقعك
         // يمكنك الحصول عليه مجاناً من الرابط: https://aistudio.google.com/app/apikey
         // ======================================================================
-        const apiKey = "ضع_مفتاحك_هنا"; 
+        const apiKey = "AIzaSyDIYzkEmcIHVIPfxU7bxH-sPyHRkKcQF_o"; 
 
         // --- Constants ---
         const ADMIN_PHONE = "201065754853";
@@ -470,19 +470,7 @@
 
             try {
                 // نظام حماية ذكي: يكتشف مكان تشغيل الكود تلقائياً
-                const isCanvas = window.location.hostname.includes('usercontent.goog');
-                let url = "";
-
-                if (isCanvas) {
-                    // 1. إذا كنت تجرب البوت هنا داخل المنصة (Canvas): يستخدم الإعدادات الافتراضية ليعمل بدون أخطاء
-                    url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`;
-                } else {
-                    // 2. إذا كنت على (GitHub / Vercel / جهازك الشخصي): يستخدم مفتاحك الحقيقي والموديل المستقر
-                    if (!apiKey || apiKey === "" || apiKey === "AIzaSyDIYzkEmcIHVIPfxU7bxH-sPyHRkKcQF_o") {
-                        throw new Error("MISSING_API_KEY");
-                    }
-                    url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                }
+             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
                 
                 const payload = {
                     contents: [{ parts: [{ text: textPrompt }] }],
