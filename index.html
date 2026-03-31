@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elnems AI Bot</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0a0a0f;
+            color: #f3f4f6;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        /* Custom Scrollbar for chat */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a40;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+        /* Background pattern for chat */
+        .chat-bg {
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+
+    <!-- ================= VIEW 1: LEAD FORM ================= -->
+    <div id="view-form" class="flex flex-col items-center justify-center min-h-screen relative overflow-hidden hidden">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="w-full max-w-md bg-[#12121c]/80 backdrop-blur-xl border border-[#2a2a40] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.5)] p-8 relative z-10 mx-4">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.4)] mb-4">
+                    <i data-lucide="sparkles" class="text-white w-10 h-10"></i>
+                </div>
+                <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 mb-2">Elnems Films</h1>
+                <p class="text-gray-400 text-sm">سجل بياناتك للتواصل والبدء في الاستشارة</p>
+            </div>
+
+            <form id="leadForm" class="space-y-4">
+                <div class="relative">
+                    <i data-lucide="user-circle" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5"></i>
+                    <input type="text" id="leadName" placeholder="الاسم بالكامل" required
+                        class="w-full bg-[#0a0a0f] border border-[#2a2a40] text-gray-100 rounded-xl py-3 pr-11 pl-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                </div>
+
+                <div class="relative">
+                    <i data-lucide="calendar" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5"></i>
+                    <input type="number" id="leadAge" placeholder="السن" required
+                        class="w-full bg-[#0a0a0f] border border-[#2a2a40] text-gray-100 rounded-xl py-3 pr-11 pl-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                </div>
+
+                <div class="relative">
+                    <i data-lucide="map-pin" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5"></i>
+                    <input type="text" id="leadGov" placeholder="المحافظة" required
+                        class="w-full bg-[#0a0a0f] border border-[#2a2a40] text-gray-100 rounded-xl py-3 pr-11 pl-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                </div>
+
+                <div class="relative">
+                    <i data-lucide="phone" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5"></i>
+                    <input type="tel" id="leadPhone" placeholder="رقم الواتساب (مثال: 01012345678)" dir="ltr" required
+                        class="w-full bg-[#0a0a0f] border border-[#2a2a40] text-gray-100 rounded-xl py-3 pr-11 pl-4 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-left">
+                </div>
+                <p id="phoneError" class="text-red-400 text-xs mt-1 text-right hidden"></p>
+
+                <button type="submit"
+                    class="w-full mt-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    <span>إرسال البيانات عبر واتساب</span>
+                </button>
+                <p class="text-center text-[11px] text-gray-500 mt-3">سيتم توجيهك لواتساب لإرسال بياناتك أولاً لضمان الجدية.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= VIEW 2: CONFIRMATION ================= -->
+    <div id="view-confirm" class="flex flex-col items-center justify-center min-h-screen relative overflow-hidden hidden">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="w-full max-w-md bg-[#12121c]/80 backdrop-blur-xl border border-[#2a2a40] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.5)] p-8 relative z-10 text-center mx-4">
+            <div class="w-20 h-20 mx-auto rounded-full bg-green-500/20 border border-green-500/50 flex items-center justify-center mb-6 animate-pulse">
+                <i data-lucide="check-circle-2" class="text-green-500 w-10 h-10"></i>
+            </div>
+            
+            <h2 id="confirmName" class="text-2xl font-bold text-white mb-4">خطوة أخيرة! ⏳</h2>
+            
+            <p class="text-gray-300 mb-6 leading-relaxed text-sm">
+                تم تحويلك إلى واتساب. يرجى <strong class="text-green-400">الضغط على زر الإرسال في واتساب</strong> لتأكيد وصول بياناتك لفريقنا، ثم العودة إلى هنا لفتح المحادثة.
+            </p>
+
+            <button id="btnUnlockChat" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3.5 rounded-xl shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 mb-4">
+                <span>أرسلت الرسالة بالفعل ✅، افتح الشات</span>
+            </button>
+
+            <button onclick="openWhatsAppIntro()" class="text-sm text-gray-500 hover:text-gray-300 underline transition-colors">
+                لم يفتح الواتساب معك؟ اضغط هنا للمحاولة مجدداً
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= VIEW 3: CHAT ================= -->
+    <div id="view-chat" class="flex flex-col h-screen hidden">
+        
+        <!-- Header -->
+        <header class="flex items-center justify-between px-6 py-4 bg-[#12121c] border-b border-[#2a2a40] shadow-md relative overflow-hidden flex-shrink-0">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-600/20 blur-xl pointer-events-none"></div>
+            
+            <div class="flex items-center gap-4 relative z-10">
+                <div class="relative">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-[2px]">
+                        <div class="w-full h-full bg-[#0a0a0f] rounded-full flex items-center justify-center overflow-hidden">
+                            <i data-lucide="sparkles" class="text-blue-400 w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#12121c]"></div>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 tracking-wider">Elnems Support</h1>
+                    <p id="chatSubtitle" class="text-xs text-blue-300/70">متواجد للرد عليك ⚡</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 relative z-10">
+                <button onclick="sendChatHistoryToWhatsApp()" class="hidden sm:flex items-center gap-2 px-4 py-2 bg-green-600/20 text-green-400 border border-green-600/50 rounded-full hover:bg-green-600 hover:text-white transition-all text-sm font-medium">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>إرسال المحادثة (واتساب)</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Messages Area -->
+        <main id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-6 chat-bg">
+            <!-- Messages will be injected here via JS -->
+        </main>
+
+        <!-- Loading Indicator (Hidden by default) -->
+        <div id="loadingIndicator" class="p-4 chat-bg hidden flex-shrink-0">
+            <div class="flex gap-4 max-w-4xl mx-auto flex-row">
+                <div class="flex-shrink-0 mt-1">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                        <i data-lucide="sparkles" class="text-white w-5 h-5"></i>
+                    </div>
+                </div>
+                <div class="p-4 rounded-2xl bg-[#151522] border border-[#2d2d44] flex items-center gap-3 text-blue-400">
+                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
+                    <span class="text-sm">بنجهز الرد يا بطل...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="bg-[#12121c] border-t border-[#2a2a40] p-4 pb-6 flex-shrink-0">
+            <div class="max-w-4xl mx-auto space-y-4">
+                
+                <!-- Quick Actions -->
+                <div class="flex flex-wrap gap-2" id="quickActionsContainer">
+                    <!-- Quick actions injected via JS -->
+                </div>
+
+                <!-- Input Box -->
+                <div class="relative flex items-center bg-[#0a0a0f] border border-[#2a2a40] rounded-xl focus-within:border-purple-500 focus-within:ring-1 focus-within:ring-purple-500 transition-all duration-300 shadow-inner">
+                    <textarea id="chatInput" placeholder="اكتب استفسارك هنا..." rows="1"
+                        class="flex-1 bg-transparent p-4 text-gray-100 placeholder-gray-600 focus:outline-none resize-none min-h-[60px] max-h-[150px]"></textarea>
+                    
+                    <div class="flex items-center gap-2 px-3 pl-4 border-r border-[#2a2a40]">
+                        <button onclick="sendChatHistoryToWhatsApp()" title="إرسال المحادثة بالكامل واتساب" class="p-2 text-green-500 hover:bg-green-500/10 rounded-lg transition-colors flex items-center justify-center">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        </button>
+                        <button id="btnSend" title="إرسال" class="p-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i data-lucide="send" class="w-5 h-5 transform rotate-180"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="text-center text-xs text-gray-500 mt-2">
+                    هل استقريت على طلبك؟ <button onclick="sendChatHistoryToWhatsApp()" class="text-green-400 hover:underline">أرسل المحادثة كاملة لنا على واتساب!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- App State ---
+        let step = 'form'; // 'form' | 'confirm' | 'chat'
+        let leadData = { name: '', age: '', governorate: '', phone: '' };
+        let messages = [
+            {
+                id: 1,
+                role: 'model',
+                content: 'أهلاً بك يا بطل في Elnems Films 🎬 أنا هنا عشان أساعدك تحترف المونتاج وتوصل فيديوهاتك لملايين المشاهدات 🔥 إزاي أقدر أساعدك تبدأ رحلتك النهاردة؟'
+            }
+        ];
+        let isLoading = false;
+
+        // ======================================================================
+        // ⚠️ هام جداً: ضع مفتاح API الخاص بك هنا لكي يعمل البوت عند رفعه لموقعك
+        // يمكنك الحصول عليه مجاناً من الرابط: https://aistudio.google.com/app/apikey
+        // ======================================================================
+        const apiKey = "AIzaSyDIYzkEmcIHVIPfxU7bxH-sPyHRkKcQF_o"; 
+
+        // --- Constants ---
+        const ADMIN_PHONE = "201065754853";
+        const STORAGE_KEY = "elnems_bot_state";
+
+        const quickActions = [
+            { label: 'تفاصيل ومواعيد الكورس', icon: 'calendar', prompt: 'ممكن تفاصيل عن مدة الكورسات ومواعيد المحاضرات؟' },
+            { label: 'أماكن الحضور (أوفلاين)', icon: 'map-pin', prompt: 'مكان الكورس الأوفلاين فين؟ ولو أنا من محافظة تانية أعمل إيه؟' },
+            { label: 'أسعار الكورسات وطرق الدفع', icon: 'dollar-sign', prompt: 'بكام الكورس وبدفع إزاي؟ وهل في استرجاع للفلوس؟' },
+        ];
+
+        // --- DOM Elements ---
+        const viewForm = document.getElementById('view-form');
+        const viewConfirm = document.getElementById('view-confirm');
+        const viewChat = document.getElementById('view-chat');
+        const form = document.getElementById('leadForm');
+        const phoneError = document.getElementById('phoneError');
+        const chatContainer = document.getElementById('chatContainer');
+        const chatInput = document.getElementById('chatInput');
+        const btnSend = document.getElementById('btnSend');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        // --- Initialization ---
+        function initApp() {
+            loadState();
+            renderView();
+            renderQuickActions();
+            renderMessages();
+        }
+
+        // --- Storage Logic ---
+        function saveState() {
+            const state = { step, leadData, messages };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    step = parsed.step || 'form';
+                    leadData = parsed.leadData || leadData;
+                    if (parsed.messages && parsed.messages.length > 0) {
+                        messages = parsed.messages;
+                    }
+                } catch (e) {
+                    console.error("Error loading state", e);
+                }
+            }
+        }
+
+        // --- UI Rendering ---
+        function renderView() {
+            viewForm.classList.add('hidden');
+            viewConfirm.classList.add('hidden');
+            viewChat.classList.add('hidden');
+
+            if (step === 'form') {
+                viewForm.classList.remove('hidden');
+                document.getElementById('leadName').value = leadData.name;
+                document.getElementById('leadAge').value = leadData.age;
+                document.getElementById('leadGov').value = leadData.governorate;
+                document.getElementById('leadPhone').value = leadData.phone;
+            } else if (step === 'confirm') {
+                viewConfirm.classList.remove('hidden');
+                document.getElementById('confirmName').innerText = `خطوة أخيرة يا ${leadData.name}! ⏳`;
+            } else if (step === 'chat') {
+                viewChat.classList.remove('hidden');
+                document.getElementById('chatSubtitle').innerText = `متواجد للرد عليك يا ${leadData.name} ⚡`;
+                scrollToBottom();
+            }
+        }
+
+        function scrollToBottom() {
+            setTimeout(() => {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 50);
+        }
+
+        function renderMessages() {
+            chatContainer.innerHTML = '';
+            messages.forEach(msg => {
+                const isUser = msg.role === 'user';
+                const msgHtml = `
+                    <div class="flex gap-4 max-w-4xl mx-auto ${isUser ? 'flex-row-reverse' : 'flex-row'}">
+                        <div class="flex-shrink-0 mt-1">
+                            ${isUser 
+                                ? `<div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
+                                     <i data-lucide="user" class="text-gray-400 w-5 h-5"></i>
+                                   </div>` 
+                                : `<div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                                     <i data-lucide="sparkles" class="text-white w-4 h-4"></i>
+                                   </div>`
+                            }
+                        </div>
+                        <div class="p-4 rounded-2xl max-w-[85%] ${isUser ? 'bg-gray-800 text-gray-100 rounded-tr-sm border border-gray-700' : 'bg-[#151522] text-gray-200 rounded-tl-sm border border-[#2d2d44] shadow-[0_4px_20px_rgba(0,0,0,0.3)]'}">
+                            <div class="whitespace-pre-wrap leading-relaxed text-[15px]">${msg.content}</div>
+                        </div>
+                    </div>
+                `;
+                chatContainer.insertAdjacentHTML('beforeend', msgHtml);
+            });
+            lucide.createIcons();
+            scrollToBottom();
+        }
+
+        function renderQuickActions() {
+            const container = document.getElementById('quickActionsContainer');
+            container.innerHTML = '';
+            quickActions.forEach(action => {
+                const btn = document.createElement('button');
+                btn.className = "flex items-center gap-2 px-4 py-2 bg-[#1a1a2e] border border-[#2d2d44] hover:border-blue-500 hover:text-blue-400 hover:bg-[#1a1a3a] text-gray-300 text-sm rounded-full transition-all duration-300";
+                btn.innerHTML = `<i data-lucide="${action.icon}" class="w-4 h-4"></i><span>${action.label}</span>`;
+                btn.onclick = () => handleSendText(action.prompt);
+                container.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        function setLoading(loading) {
+            isLoading = loading;
+            btnSend.disabled = loading;
+            chatInput.disabled = loading;
+            if (loading) {
+                loadingIndicator.classList.remove('hidden');
+                scrollToBottom();
+            } else {
+                loadingIndicator.classList.add('hidden');
+            }
+        }
+
+        // --- Logic ---
+        function validatePhone(phone) {
+            const egPhoneRegex = /^(010|011|012|015)[0-9]{8}$/;
+            if (!egPhoneRegex.test(phone)) {
+                phoneError.innerText = 'برجاء إدخال رقم واتساب مصري صحيح (11 رقم يبدأ بـ 01)';
+                phoneError.classList.remove('hidden');
+                return false;
+            }
+            phoneError.classList.add('hidden');
+            return true;
+        }
+
+        function openWhatsAppIntro() {
+            const text = `🚀 عميل جديد من البوت!\n\n👤 الاسم: ${leadData.name}\n🎂 السن: ${leadData.age}\n📍 المحافظة: ${leadData.governorate}\n📱 رقم الواتساب: ${leadData.phone}\n\nأرغب في استكمال حجز الكورس أو الاستفسار.`;
+            window.open(`https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // Form Submit
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            leadData.name = document.getElementById('leadName').value.trim();
+            leadData.age = document.getElementById('leadAge').value.trim();
+            leadData.governorate = document.getElementById('leadGov').value.trim();
+            leadData.phone = document.getElementById('leadPhone').value.trim();
+
+            if (!validatePhone(leadData.phone)) return;
+
+            openWhatsAppIntro();
+            step = 'confirm';
+            saveState();
+            renderView();
+        });
+
+        // Chat Input Events
+        document.getElementById('btnUnlockChat').addEventListener('click', () => {
+            step = 'chat';
+            saveState();
+            renderView();
+        });
+
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendText(chatInput.value);
+            }
+        });
+
+        btnSend.addEventListener('click', () => {
+            handleSendText(chatInput.value);
+        });
+
+        // Chat Sending to WhatsApp (This is the feature that sends the FULL history)
+        window.sendChatHistoryToWhatsApp = function() {
+            let historyText = `مرحباً Elnems Films، أنا (${leadData.name}) وهذه محادثتي بالكامل مع المساعد الذكي وأريد استكمال الحجز:\n\n================\n`;
+            messages.forEach((msg) => {
+                const roleName = msg.role === 'user' ? leadData.name : 'البوت';
+                historyText += `[${roleName}]: ${msg.content}\n\n`;
+            });
+            historyText += "================\nأنتظر ردكم! 🚀";
+            
+            window.open(`https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(historyText)}`, '_blank');
+        };
+
+        // API Call
+        async function fetchWithRetry(url, options, maxRetries = 5) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    if (i === maxRetries - 1) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function handleSendText(textPrompt) {
+            textPrompt = textPrompt.trim();
+            if (!textPrompt || isLoading) return;
+
+            const userMsg = { id: Date.now(), role: 'user', content: textPrompt };
+            messages.push(userMsg);
+            chatInput.value = '';
+            saveState();
+            renderMessages();
+            
+            setLoading(true);
+
+            const systemPrompt = `
+                أنت ممثل خدمة العملاء والمسوق الخبير (بخبرة 30 عاماً في التسويق) لمؤسسة "Elnems Films" المتخصصة في كورسات المونتاج وصناعة المحتوى.
+                أنت تتحدث مباشرة إلى "العملاء" والطلاب المحتملين، وليس لمديرك. اسم العميل الذي تتحدث معه الآن هو "${leadData.name}".
+                
+                قواعدك الصارمة جداً:
+                1. الإجابات يجب أن تكون قصيرة جداً جداً وموجزة (سطرين أو 3 كحد أقصى). لا تكتب فقرات طويلة أبداً.
+                2. استخدم الإيموجيز بكثرة لتبدو جذاباً ومرحاً ومحترفاً.
+                3. ممنوع منعاً باتاً استخدام النجوم (*) أو الهاشتاج (#) أو القوائم المعقدة في إجاباتك. اكتب نصوصاً عادية ومباشرة.
+                4. تحدث بلهجة مصرية/عربية جذابة ومقنعة جداً، ونادي العميل باسمه.
+                5. مجالك فقط: المونتاج (Premiere, After Effects)، وصناعة المحتوى لتيك توك.
+                
+                معلوماتك الدقيقة لبيع الكورسات (استخدمها عند السؤال فقط ولا تسردها كلها مرة واحدة):
+                - الأسعار أوفلاين: بريمير وأفتر إفكتس معاً بـ 5000 جنيه (خصم من 7000) 💸 بريمير لوحده 2500، وأفتر إفكتس 2500.
+                - الأسعار أونلاين: بريمير وأفتر إفكتس معاً بـ 4000 جنيه 🚀 بريمير لوحده 2000، وأفتر إفكتس 2000.
+                - مدة الكورس: البريمير والأفتر إفكتس معاً مدته من (شهرين إلى شهرين ونصف). الكورس المنفرد مدته (شهر إلى شهر ونصف) سواء أونلاين أو أوفلاين.
+                - نظام المحاضرات: محاضرتين أسبوعياً، مدة المحاضرة 3 ساعات. أيام المحاضرات مرنة بنحددها مع الجروب عشان تناسب الكل.
+                - مكان الأوفلاين: المقر الأساسي في "الزقازيق". لو العميل من محافظة أخرى، بنفتح كورس أوفلاين في محافظته بشرط تجميع جروب لا يقل عن 10 أشخاص.
+                - طريقة الدفع: الدفع عن طريق "فودافون كاش" فقط على رقم 01065754853.
+                - سياسة الاسترجاع (Refund): متاح استرداد المبلغ بعد أول أسبوع فقط من الكورس.
+                - الحجز: عبر موقعنا https://elnemsfilms.vercel.app/ أو على رقمنا 01065754853.
+                
+                استراتيجية البيع (CTA):
+                في نهاية كل رد، اطلب من العميل دائماً اتخاذ إجراء (Call to action). إما أن يسأل سؤالاً، أو توجهه للحجز عبر موقعنا أو التواصل واتساب.
+            `;
+
+            try {
+                // التبديل التلقائي بين الموديل التجريبي (داخل Canvas) والموديل المستقر (عند وضع مفتاحك الخارجي)
+                const modelVersion = (!apiKey || apiKey.trim() === "") ? "gemini-2.5-flash-preview-09-2025" : "gemini-1.5-flash";
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelVersion}:generateContent?key=${apiKey}`;
+                
+                const payload = {
+                    contents: [{ parts: [{ text: textPrompt }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+
+                const data = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                let botReply = "عذراً، حدث خطأ، جرب تاني يا بطل! 🔧";
+                if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    botReply = data.candidates[0].content.parts[0].text;
+                }
+                
+                // Clean markdown artifacts
+                botReply = botReply.replace(/[*#]/g, '').trim();
+                
+                messages.push({ id: Date.now(), role: 'model', content: botReply });
+
+            } catch (error) {
+                console.error(error);
+                messages.push({ id: Date.now(), role: 'model', content: "في مشكلة في الاتصال بالذكاء الاصطناعي 🌐 يرجى التأكد من اتصالك بالإنترنت وصلاحية مفتاح الـ API." });
+            } finally {
+                setLoading(false);
+                saveState();
+                renderMessages();
+            }
+        }
+
+        // Start App
+        initApp();
+    </script>
+</body>
+</html>
